@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ZipWrapper2"
         mc:Ignorable="d"
-        Title="Zip/Unzip Wrapper" Height="300" Width="400">
+        Title="Zip/Unzip Wrapper" Height="325" Width="400">
     <Grid>
         <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" >
             <TextBlock Text="Drag and drop a file here:" Margin="10,10,10,10"/>
