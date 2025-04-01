@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZipWrapper2", "ZipWrapper2\ZipWrapper2.csproj", "{7763554C-7C35-4985-0E76-BC4116189CAC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7763554C-7C35-4985-0E76-BC4116189CAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7763554C-7C35-4985-0E76-BC4116189CAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7763554C-7C35-4985-0E76-BC4116189CAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7763554C-7C35-4985-0E76-BC4116189CAC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1DBF6AB5-856A-428D-8E08-A0D13103B7CD}
+	EndGlobalSection
+EndGlobal
