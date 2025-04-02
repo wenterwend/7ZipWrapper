@@ -3,17 +3,38 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ZipWrapper2.Services
 {
     public class ZipService
     {
-        private const string SevenZipPath = @"""C:\Program Files\7-Zip\7z.exe"""; // Adjust the path to where 7-Zip is installed
+        private readonly string _sevenZipPath;
+        private readonly int _defaultTimeout;
+
+        public ZipService()
+        {
+            // Load configuration from appsettings.json
+            string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+            if (File.Exists(configPath))
+            {
+                string configJson = File.ReadAllText(configPath);
+                var config = JsonSerializer.Deserialize<Dictionary<string, object>>(configJson);
+
+                _sevenZipPath = config.ContainsKey("SevenZipPath") ? config["SevenZipPath"].ToString() : @"C:\Program Files\7-Zip\7z.exe";
+                _defaultTimeout = config.ContainsKey("DefaultTimeout") ? Convert.ToInt32(config["DefaultTimeout"]) : 10000;
+            }
+            else
+            {
+                // Fallback to defaults if configuration file is missing
+                _sevenZipPath = @"C:\Program Files\7-Zip\7z.exe";
+                _defaultTimeout = 10000;
+            }
+        }
 
         public string ZipFile(string filePath, string password)
         {
-            
             string directory = Path.GetDirectoryName(filePath);
             string zipFilePath = Path.Combine(directory, Path.GetFileNameWithoutExtension(filePath) + ".zip");
             string arguments = $"a \"{zipFilePath}\" \"{filePath}\"";
@@ -67,47 +88,16 @@ namespace ZipWrapper2.Services
             {
                 arguments += $" -p{password}";
             }
-            Console.WriteLine($"Command: {SevenZipPath} {arguments}");
+
             return RunProcess(arguments);
         }
 
-        private string RunProcess1(string arguments)
-        {
-            Console.WriteLine($"Command: {SevenZipPath} {arguments}");
-            ProcessStartInfo processStartInfo = new ProcessStartInfo
-            {
-                FileName = SevenZipPath,
-                Arguments = arguments,
-                // RedirectStandardOutput = true,
-                // RedirectStandardError = true, // Capture error messages as well
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            using (Process process = new Process { StartInfo = processStartInfo })
-            {
-                process.Start();
-
-
-                process.WaitForExit();
-                // Read the standard output and error streams
-                string output = "";//process.StandardOutput.ReadToEnd();
-                string error = "";//process.StandardError.ReadToEnd();
-
-                // Combine output and error messages
-                if (!string.IsNullOrEmpty(error))
-                {
-                    output += Environment.NewLine + "Error: " + error;
-                }
-
-                return output;
-            }
-        }
         private string RunProcess(string arguments)
         {
-            Console.WriteLine($"Command: {SevenZipPath} {arguments}");
+            Console.WriteLine($"Command: {_sevenZipPath} {arguments}");
             ProcessStartInfo processStartInfo = new ProcessStartInfo
             {
-                FileName = SevenZipPath,
+                FileName = _sevenZipPath,
                 Arguments = arguments,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -124,7 +114,7 @@ namespace ZipWrapper2.Services
                 Task<string> errorTask = process.StandardError.ReadToEndAsync();
 
                 // Set a timeout for the process
-                if (!process.WaitForExit(10000)) // Timeout after 10 seconds
+                if (!process.WaitForExit(_defaultTimeout)) // Use the timeout from configuration
                 {
                     process.Kill(); // Terminate the process if it hangs
                     return "The operation timed out. Please check if the file is password-protected or if the input is valid.";
@@ -152,7 +142,5 @@ namespace ZipWrapper2.Services
                 return string.IsNullOrEmpty(output) ? "Operation completed successfully." : output;
             }
         }
-
     }
-    
 }
