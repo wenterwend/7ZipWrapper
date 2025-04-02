@@ -5,7 +5,13 @@
     <TargetFramework>net9.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UseWPF>true</UseWPF>
+    <UseWPF>true</UseWPF><PackageId>ZipWrapper2</PackageId> <!-- Unique identifier for your package -->
+    <Version>1.0.0</Version> <!-- Package version -->
+    <Authors>Ashton June</Authors>
+    <Description>A wrapper for 7-Zip to zip and unzip files and folders.</Description>
+    <PackageTags>zip unzip 7zip</PackageTags> <!-- Tags for discoverability -->
+    <RepositoryUrl>https://github.com/wenterwend/7ZipWrapper</RepositoryUrl> <!-- Optional -->
+ 
   </PropertyGroup>
 
 </Project>

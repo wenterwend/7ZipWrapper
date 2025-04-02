@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -103,10 +104,22 @@ public partial class MainWindow : Window
         {
             if (pathsCount == 1)
             {
-                resultMessage = _zipService.ZipFile(filePaths[0], password);
+                if(Directory.Exists(filePaths[0]))
+                {
+                    resultMessage = _zipService.ZipFolder(filePaths[0], password);
+                }
+                else
+                {
+                    resultMessage = _zipService.ZipFile(filePaths[0], password);
+                }
             }
             else if(pathsCount > 1)
             {
+                // if(filePaths.Any(path => Directory.Exists(path)))
+                // {
+                //     MessageBox.Show("Folders must be zipped without other files.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //     return;
+                // }
                 resultMessage = _zipService.ZipMultipleFiles(filePaths, password);
             }
 

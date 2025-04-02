@@ -79,6 +79,29 @@ namespace ZipWrapper2.Services
             return RunProcess(arguments);
         }
 
+        public string ZipFolder(string folderPath, string password)
+        {
+            // Ensure the folder exists
+            if (!Directory.Exists(folderPath))
+            {
+                return "The specified folder does not exist.";
+            }
+
+            // Build the zip file name with the full path
+            string zipFilePath = Path.Combine(Path.GetDirectoryName(folderPath), Path.GetFileName(folderPath) + ".zip");
+
+            // Build the arguments for zipping the folder
+            string arguments = $"a \"{zipFilePath}\" \"{folderPath}\\*\"";
+
+            if (!string.IsNullOrEmpty(password))
+            {
+                arguments += $" -p{password} -mem=AES256";
+            }
+
+            // Run the process and return the result
+            return RunProcess(arguments);
+        }
+
         public string UnzipFile(string zipFilePath, string password)
         {
             string extractPath = Path.GetDirectoryName(zipFilePath);
