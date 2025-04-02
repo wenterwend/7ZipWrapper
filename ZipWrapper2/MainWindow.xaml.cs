@@ -32,33 +32,14 @@ public partial class MainWindow : Window
             // Get the dropped files
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-            // Process the first file (you can modify this to handle multiple files)
             if (files.Length > 0)
             {
-                string filePath = files[0];
-                FileDropTextBlock.Text = filePath;
-                // Check the type of the sender
-                // if (sender is Border border && border.Child is TextBlock textBlock)
-                // {
-                //     // Update the TextBlock inside the Border with the file path
-                //     textBlock.Text = filePath;
-                //     ((TextBlock)((Border)sender).Child).Text = filePath;
-                // }
-                // else if (sender is Rectangle rectangle)
-                // {
-                //     // Handle the case where the sender is a Rectangle
-                //     //MessageBox.Show($"File dropped on a Rectangle: {filePath}", "File Dropped", MessageBoxButton.OK, MessageBoxImage.Information);
-                // }
-                // else if (sender is TextBlock textBlock)
-                // {
-                //     // Handle the case where the sender is a TextBlock
-                //     textBlock.Text = filePath;
-                // }
-                // else
-                // {
-                //     // Handle other cases
-                //     //MessageBox.Show($"File dropped: {filePath}", "File Dropped", MessageBoxButton.OK, MessageBoxImage.Information);
-                // }
+                // Clear the ListBox and add each file path
+                FileDropListBox.Items.Clear();
+                foreach (string filePath in files)
+                {
+                    FileDropListBox.Items.Add(filePath);
+                }
             }
         }
 
@@ -98,25 +79,49 @@ public partial class MainWindow : Window
 
     private void OnExecuteClick(object sender, RoutedEventArgs e)
     {
-        string filePath = FileDropTextBlock.Text;
-        // string filePath = ((TextBlock)((Border)FindName("FileDropBorder")).Child).Text;
-        string password = PasswordBox.Password; // Use PasswordBox.Password instead of PasswordBox.Text
+        // Retrieve all file paths from the ListBox
+        var filePaths = FileDropListBox.Items?.Cast<string>().ToList();
 
-        // Determine the operation based on the file extension
-        bool isZipOperation = !(filePath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase) || 
-                                filePath.EndsWith(".7z", StringComparison.OrdinalIgnoreCase));
-
-        string resultMessage;
-        if (isZipOperation)
+        if (filePaths == null)
         {
-            resultMessage = _zipService.ZipFile(filePath, password);
+            filePaths = new List<string>();
         }
-        else
+        
+        int pathsCount = filePaths.Count();
+        // Ensure there are files to process
+        if (pathsCount == 0)
         {
-            resultMessage = _zipService.UnzipFile(filePath, password);
+            MessageBox.Show("No files selected. Please drag and drop files into the drop area.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
         }
+        bool isZipOperation = (!(filePaths[0].EndsWith(".zip", StringComparison.OrdinalIgnoreCase) || 
+                                    filePaths[0].EndsWith(".7z", StringComparison.OrdinalIgnoreCase)));
 
-        MessageBox.Show(resultMessage);
+        string password = PasswordBox.Password; // Use PasswordBox.Password for the passwordz
+        string resultMessage = "No operation performed.";
+        if(isZipOperation)
+        {
+            if (pathsCount == 1)
+            {
+                resultMessage = _zipService.ZipFile(filePaths[0], password);
+            }
+            else if(pathsCount > 1)
+            {
+                resultMessage = _zipService.ZipMultipleFiles(filePaths, password);
+            }
+
+        }
+        else //it is an unzip operation
+        {
+            if(pathsCount > 1)
+            {
+                MessageBox.Show("Please select only one zip file to unzip.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            resultMessage = _zipService.UnzipFile(filePaths[0], password);
+        }
+        // Show the result message in a MessageBox
+        MessageBox.Show(resultMessage, "Result", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private void OnShowPasswordChecked(object sender, RoutedEventArgs e)

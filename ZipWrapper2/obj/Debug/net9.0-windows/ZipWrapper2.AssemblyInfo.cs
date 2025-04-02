@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ZipWrapper2")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f87d123ecf61eefe1051b3117f0e14adc0b204d6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cf6d3969ea3d41fe151c2ebad42d06812471970a")]
 [assembly: System.Reflection.AssemblyProductAttribute("ZipWrapper2")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ZipWrapper2")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

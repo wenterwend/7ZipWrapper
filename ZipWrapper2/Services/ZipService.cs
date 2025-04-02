@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ZipWrapper2.Services
@@ -11,7 +13,9 @@ namespace ZipWrapper2.Services
 
         public string ZipFile(string filePath, string password)
         {
-            string zipFilePath = Path.ChangeExtension(filePath, ".zip");
+            
+            string directory = Path.GetDirectoryName(filePath);
+            string zipFilePath = Path.Combine(directory, Path.GetFileNameWithoutExtension(filePath) + ".zip");
             string arguments = $"a \"{zipFilePath}\" \"{filePath}\"";
 
             if (!string.IsNullOrEmpty(password))
@@ -19,6 +23,38 @@ namespace ZipWrapper2.Services
                 arguments += $" -p{password} -mem=AES256";
             }
 
+            return RunProcess(arguments);
+        }
+
+        public string ZipMultipleFiles(IEnumerable<string> filePaths, string password)
+        {
+            // Ensure the list of files is not empty
+            if (filePaths == null || !filePaths.Any())
+            {
+                return "No files provided to zip.";
+            }
+
+            // Get the directory of the first file
+            string firstFilePath = filePaths.First();
+            string directory = Path.GetDirectoryName(firstFilePath);
+
+            // Build the zip file name with the full path
+            string zipName = Path.Combine(directory, Path.GetFileNameWithoutExtension(firstFilePath) + ".zip");
+
+            // Build the arguments for zipping multiple files
+            string arguments = $"a \"{zipName}\"";
+
+            foreach (string filePath in filePaths)
+            {
+                arguments += $" \"{filePath}\"";
+            }
+
+            if (!string.IsNullOrEmpty(password))
+            {
+                arguments += $" -p{password} -mem=AES256";
+            }
+
+            // Run the process and return the result
             return RunProcess(arguments);
         }
 
@@ -37,6 +73,7 @@ namespace ZipWrapper2.Services
 
         private string RunProcess1(string arguments)
         {
+            Console.WriteLine($"Command: {SevenZipPath} {arguments}");
             ProcessStartInfo processStartInfo = new ProcessStartInfo
             {
                 FileName = SevenZipPath,
@@ -46,7 +83,6 @@ namespace ZipWrapper2.Services
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
-
             using (Process process = new Process { StartInfo = processStartInfo })
             {
                 process.Start();
@@ -68,6 +104,7 @@ namespace ZipWrapper2.Services
         }
         private string RunProcess(string arguments)
         {
+            Console.WriteLine($"Command: {SevenZipPath} {arguments}");
             ProcessStartInfo processStartInfo = new ProcessStartInfo
             {
                 FileName = SevenZipPath,

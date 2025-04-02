@@ -8,17 +8,10 @@
         Title="Zip/Unzip Wrapper" Height="325" Width="400">
     <Grid>
         <StackPanel Grid.Row="1" Grid.Column="1" Margin="10" >
-            <TextBlock Text="Drag and drop a file here:" Margin="10,10,10,10"/>
+            <TextBlock Text="Drag and drop file(s) here:" Margin="10,10,10,10"/>
             <Border x:Name="FileDropBorder" BorderBrush="Gray" BorderThickness="2" Height="100" AllowDrop="True" 
                     Drop="OnFileDrop" DragOver="OnDragOver">
-                <Grid>
-                    <!-- Rectangle for background or visual effect -->
-                    <Rectangle Fill="Transparent" Stroke="Gray" StrokeThickness="2" Margin="0,0,0,0" RadiusX="5" RadiusY="5" AllowDrop="True"/>   
-                    
-                    <!-- TextBlock for instructions -->
-                    <TextBlock x:Name="FileDropTextBlock" Text="Drop File Here" VerticalAlignment="Center" HorizontalAlignment="Center" 
-                               TextWrapping="Wrap" IsHitTestVisible="False"/>
-                </Grid>
+                <ListBox x:Name="FileDropListBox" />
             </Border>
             <TextBlock Text="Enter Password:(optional)" Margin="0,10,0,0" HorizontalAlignment="Left"/>
 
